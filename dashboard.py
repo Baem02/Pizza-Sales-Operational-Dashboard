@@ -21,6 +21,13 @@ def load_data():
 
 df = load_data()
 
+# Display time period prominently
+min_date = df['order_date'].min().strftime('%d %b %Y')
+max_date = df['order_date'].max().strftime('%d %b %Y')
+st.caption(f"📅 Data period: {min_date} to {max_date}")
+
+
+
 # Sidebar filters
 st.sidebar.title("🍕 Filters")
 selected_categories = st.sidebar.multiselect(
