@@ -31,11 +31,6 @@ st.markdown("""
     .stCheckbox {
         margin-bottom: -0.5rem;
     }
-    .stButton button {
-        background-color: #3a3a4a;
-        color: white;
-        border-radius: 8px;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -52,77 +47,43 @@ df = load_data()
 min_date = df['order_date'].min().strftime('%d %b %Y')
 max_date = df['order_date'].max().strftime('%d %b %Y')
 
-# ========== INITIALIZE SESSION STATE ==========
-if 'cat_states' not in st.session_state:
-    all_cats = sorted(df['pizza_category'].unique())
-    st.session_state.cat_states = {cat: True for cat in all_cats}
-if 'size_states' not in st.session_state:
-    all_sizes = sorted(df['pizza_size'].unique())
-    st.session_state.size_states = {sz: True for sz in all_sizes}
-if 'day_states' not in st.session_state:
-    days_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-    st.session_state.day_states = {day: True for day in days_order}
-
-# Reset function with rerun
-def reset_all():
-    for cat in st.session_state.cat_states:
-        st.session_state.cat_states[cat] = True
-    for sz in st.session_state.size_states:
-        st.session_state.size_states[sz] = True
-    for day in st.session_state.day_states:
-        st.session_state.day_states[day] = True
-    st.rerun()  # Force immediate rerun to refresh checkboxes
-
-# ========== SIDEBAR ==========
+# ========== SIDEBAR CHECKBOXES (no reset button) ==========
 with st.sidebar:
     st.markdown('<div class="sidebar-header">🍕 Pizza Dashboard</div>', unsafe_allow_html=True)
     
     # Category checkboxes
     st.markdown('<div class="filter-label">📂 Pizza Category</div>', unsafe_allow_html=True)
-    for cat in sorted(st.session_state.cat_states.keys()):
-        st.session_state.cat_states[cat] = st.checkbox(
-            cat.capitalize(), 
-            value=st.session_state.cat_states[cat], 
-            key=f"cat_{cat}"
-        )
-    selected_cats = [cat for cat, checked in st.session_state.cat_states.items() if checked]
+    all_cats = sorted(df['pizza_category'].unique())
+    cat_selected = {}
+    for cat in all_cats:
+        cat_selected[cat] = st.checkbox(cat.capitalize(), value=True, key=f"cat_{cat}")
+    selected_cats = [cat for cat, val in cat_selected.items() if val]
     
     st.markdown("---")
     
     # Size checkboxes
     st.markdown('<div class="filter-label">📏 Pizza Size</div>', unsafe_allow_html=True)
-    for sz in sorted(st.session_state.size_states.keys()):
-        st.session_state.size_states[sz] = st.checkbox(
-            sz.upper(), 
-            value=st.session_state.size_states[sz], 
-            key=f"size_{sz}"
-        )
-    selected_sizes = [sz for sz, checked in st.session_state.size_states.items() if checked]
+    all_sizes = sorted(df['pizza_size'].unique())
+    size_selected = {}
+    for sz in all_sizes:
+        size_selected[sz] = st.checkbox(sz.upper(), value=True, key=f"size_{sz}")
+    selected_sizes = [sz for sz, val in size_selected.items() if val]
     
     st.markdown("---")
     
-    # Day checkboxes
+    # Day of week checkboxes
     st.markdown('<div class="filter-label">📆 Day of Week</div>', unsafe_allow_html=True)
     days_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    day_selected = {}
     for day in days_order:
-        st.session_state.day_states[day] = st.checkbox(
-            day, 
-            value=st.session_state.day_states[day], 
-            key=f"day_{day}"
-        )
-    selected_days = [day for day, checked in st.session_state.day_states.items() if checked]
+        day_selected[day] = st.checkbox(day, value=True, key=f"day_{day}")
+    selected_days = [day for day, val in day_selected.items() if val]
     
     st.markdown("---")
     
-    # Holiday checkbox
+    # Holiday filter
     st.markdown('<div class="filter-label">🎉 Holiday Filter</div>', unsafe_allow_html=True)
     show_holiday_only = st.checkbox("Show only holidays", value=False)
-    
-    st.markdown("---")
-    
-    # Reset All button (now works)
-    if st.button("🔄 Reset All Filters", use_container_width=True):
-        reset_all()
 
 # Apply filters
 filtered_df = df[
@@ -135,11 +96,11 @@ if show_holiday_only:
     filtered_df = filtered_df[filtered_df['is_holiday'] == True]
 
 if filtered_df.empty:
-    st.warning("No data matches the selected filters. Please check at least one option.")
+    st.warning("No data matches the selected filters. Please check at least one option in each group.")
     st.stop()
 
 # ========== MAIN DASHBOARD ==========
-# Date as normal subtext above title
+# Date as subtext above title
 st.caption(f"📅 Data period: {min_date} – {max_date}")
 st.title("🍕 Pizza Sales Operational Dashboard")
 st.markdown("---")
@@ -214,4 +175,4 @@ with col2:
     st.dataframe(top5, use_container_width=True, hide_index=True)
 
 st.markdown("---")
-st.caption("Use sidebar checkboxes to filter data. Click 'Reset All Filters' to restore defaults.")
+st.caption("✅ Use the sidebar checkboxes to filter data. Uncheck any box to remove that item.")
