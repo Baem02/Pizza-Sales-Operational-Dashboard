@@ -1,4 +1,4 @@
-UNIVERSITY ASSIGNMENT!!!
+<h2>UNIVERSITY ASSIGNMENT!!!</h2>
 
 Online:
 https://pizza-sales-operational-dashboard-euiwwj9tquxit3bnxfmxgb.streamlit.app/
