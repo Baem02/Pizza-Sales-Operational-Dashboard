@@ -1,0 +1,102 @@
+================================================================================
+HOW TO RUN THE PIZZA SALES DASHBOARD PROJECT
+ICT550 – Principle of Data Management
+================================================================================
+
+This guide covers:
+1. Installing Anaconda
+2. Running the Jupyter Notebook (data cleaning)
+3. Running the Streamlit dashboard (local)
+
+================================================================================
+STEP 1: INSTALL ANACONDA
+================================================================================
+
+1. Download Anaconda from https://www.anaconda.com/download
+2. Run the installer (accept default settings)
+3. After installation, open Anaconda Navigator
+   OR open "Anaconda Prompt" (Windows) / Terminal (Mac/Linux)
+
+4. Install Streamlit (not included by default):
+   - Open Anaconda Prompt / Terminal
+   - Type: pip install streamlit
+
+Note: Anaconda already includes pandas, numpy, matplotlib, seaborn, plotly, jupyter.
+      You only need to add streamlit manually.
+
+================================================================================
+STEP 2: PLACE FILES IN YOUR HOME DIRECTORY
+================================================================================
+
+Copy the following files into your user home folder:
+   - On Windows: C:\Users\YourUsername\
+   - On Mac/Linux: /home/yourusername/
+
+The files to place:
+   - pizza_sales.csv
+   - global_holidays.csv
+   - ICT550_project.ipynb   (the Jupyter notebook code)
+   - dashboard.py           (Streamlit dashboard script)
+
+Note: "YourUsername" depends on your PC (e.g., C:\Users\JohnDoe or C:\Users\Student).
+
+================================================================================
+STEP 3: RUN THE JUPYTER NOTEBOOK
+================================================================================
+
+1. Open Anaconda Prompt / Terminal
+
+2. Type:
+   jupyter notebook
+
+3. Your browser opens. Click on "ICT550_project.ipynb"
+
+4. Run all cells: Click "Kernel" → "Restart & Run All"
+
+5. The notebook will:
+   - Clean the data
+   - Create a holiday flag
+   - Generate 5 charts (Revenue by Day, Hour, Category, Size, Holiday)
+   - Save pizza_sales_cleaned.csv in your home folder
+
+6. Close the notebook (keep terminal open for next step).
+
+================================================================================
+STEP 4: RUN THE DASHBOARD
+================================================================================
+
+1. In the same terminal (still in your home folder), type:
+   streamlit run dashboard.py
+
+2. Your browser opens to http://localhost:8501
+
+3. The interactive dashboard appears with:
+   - Sidebar checkboxes (category, size, day, holiday)
+   - Key metrics (Total Revenue, Pizzas Sold, etc.)
+   - Charts (Revenue by Hour, Day, Category, Size, Holiday)
+   - Top 5 pizzas table
+
+4. To stop the dashboard, press Ctrl + C in the terminal.
+
+================================================================================
+COMMON ERRORS & FIXES
+================================================================================
+
+Error: "streamlit: command not found"
+Fix: In Anaconda Prompt, run "pip install streamlit" and restart terminal.
+
+Error: "No such file or directory" for CSV
+Fix: Make sure CSV files are in the same folder as your notebook
+     (your home directory: C:\Users\YourUsername\ or /home/yourusername/).
+
+Error: KeyError: 'day_name'
+Fix: In dashboard.py, after loading CSV add:
+     df['day_name'] = df['order_date'].dt.day_name()
+
+Error: Date parsing error (ValueError)
+Fix: Use dayfirst=True in pd.to_datetime():
+     df['order_date'] = pd.to_datetime(df['order_date'], dayfirst=True)
+
+================================================================================
+END OF GUIDE
+================================================================================
